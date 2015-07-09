@@ -1,14 +1,14 @@
 Use *remote-node-steps* to generate a plugin that will let users execute
-the module commands as a[RemoteScriptNodeStep Plugins](http://rundeck.org/docs/developer/workflow-step-plugin.html#remotescriptnodestep-plugin).
+the module commands as [RemoteScriptNodeStep Plugins](http://rundeck.org/docs/developer/workflow-step-plugin.html#remotescriptnodestep-plugin).
 With your modules contained in the plugin, Rundeck will take care of
 deploying the rerun modules to the remote host (as a rerun archive)
 and execute the user's specified command.
 
 Job writers will enjoy using your rerun modules as a plugins because
-they can use the Rundeck GUI or job text formats to build workflows.
+they can use the Rundeck GUI or text formats to define Job workflows.
 
 You can specify a list of modules using a glob pattern. Every command
-contained in yor modules becomes a node step you can reference in
+contained in your modules becomes a node step you can reference in
 your job steps.
 
 Imagine you have a module called "waitfor" that has a command called "ping" you'd
@@ -37,7 +37,7 @@ Copy the plugin archive to your rundeck:
 
     cp ./build/waitfor.zip $RDECK_BASE/libext
 
-You should immediately be able
+You should immediately be able to use the plugin.
 
 ### Defining Jobs using your step plugin
 
@@ -71,7 +71,7 @@ for more about defining jobs in YAML files.
 
 The plugin passes environment variables to the remote nodes.
 
-Ensure `RD_` environment variables are passed to remote nodes by configuring your sshd correctly.
+Ensure `RD_*` environment variables are passed to remote nodes by configuring your sshd correctly.
 See the [Rundeck Aministration Guide](http://rundeck.org/docs/plugins-user-guide/ssh-plugins.html#passing-environment-variables-through-remote-command)
 
 ## Project configuration
@@ -95,8 +95,14 @@ you want to make a project configuration variable (eg, `RUNDECK_PLUGIN_CONFIG_SC
 	DEFAULT=
 	EXPORT=false
 	RUNDECK_PLUGIN_CONFIG_SCOPE=Project
+	RUNDECK_PLUGIN_CONFIG_RENDERINGOPTIONS_DISPLAYTYPE=PASSWORD
 
 Your plugin will be built in such a way that the api-key is not presented
 to the job writer as a plugin parameter.
+
+If you are creating a new project via the CLI, you can configure the plugin like so:
+
+	rd-project -a create -p myproject \
+	    --project.plugin.RemoteScriptNodeStep.waitfor.api-key=3D5D004C-A9BC-476E-9162-6E176ADFF914
 
 

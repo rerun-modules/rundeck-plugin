@@ -35,7 +35,9 @@ generate_config_property() {
 	local arguments=$(rerun_property_get "$option_dir" ARGUMENTS)
 	local default=$(rerun_property_get "$option_dir" DEFAULT)
 	local description=$(rerun_property_get "$option_dir" DESCRIPTION)
+	local type=$(rerun_property_get "$option_dir" RUNDECK_PLUGIN_CONFIG_TYPE)
 	local scope=$(rerun_property_get "$option_dir" RUNDECK_PLUGIN_CONFIG_SCOPE)
+	local displayType=$(rerun_property_get "$option_dir" RUNDECK_PLUGIN_CONFIG_RENDERINGOPTIONS_DISPLAYTYPE)
 
 	if [[ "$arguments" == "false" ]]
 	then
@@ -46,16 +48,26 @@ generate_config_property() {
 		printf -- "      description: %s\n" "$description"
 		printf -- "      default: false\n"
 	else
-		# Generate a string property
-		printf -- "    - type: String\n"
+		: ${type:=String};	# Default to a string property (or: String, Boolean, Integer, Long, *Select)
+		printf -- "    - type: $type\n"
 		printf -- "        name: %s\n" "$option"
 		printf -- "        title: %s\n" "$option"
 		printf -- "        description: %s\n" "$description"
 		[[ -n "$default" ]] && {
 		printf -- "        default: %s\n" "$default"
 		}
+		case ${type} in
+			Select|FreeSelect)
+				values=$(rerun_property_get "$option_dir" RUNDECK_PLUGIN_CONFIG_VALUES)
+				printf -- "        values: %s\n" "${values:-}"
+				;;
+		esac
 	fi
 	[[ -n "$scope" ]] && printf -- "        scope: %s\n" "$scope"
+	[[ -n "$displayType" ]] && {
+		printf -- "        renderingOptions:\n"
+		printf -- "          displayType: %s\n" "$displayType"
+	}
 }
 
 
