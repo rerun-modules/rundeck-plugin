@@ -3,17 +3,17 @@ You've created some awesome rerun modules and now
 you would like to share them as automation building blocks.
 
 Expose your rerun modules as RUNDECK plugins!
-This gives a friendly user interface to those using your modules.
-Also, exposed as a plugin, your job writers will be able
-write jobs using your plugins as steps.
+Rundeck provides a friendly user interface to people using your modules.
+
+You can expose your commands as different kinds of Rundeck plugins.
 
 ### What kind of plugins?
 
-*rundeck-plugin* can support several kinds of plugin use cases.
+*rundeck-plugin* lets you create several kinds of Rundeck plugins:
 
-* Job steps that execute remote nodes. See *node-steps* command.
-* Provide node information to your Rundeck projects.  See *model-source* command.
-* Execute commands on remote nodes. See *node-executor* command.
+* Job steps: Execute your rerun commands on remote nodes. See *remote-node-steps* command.
+* Model source: Write a command that provides node information to your Rundeck projects.  See *model-source* command.
+* Node Executor: Write a command that takes a command string and executes it on a remote node. See *node-executor* command.
 
 ### What if my command depends on other modules?
 

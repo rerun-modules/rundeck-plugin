@@ -1,12 +1,20 @@
-Use *node-steps* to generate a plugin for all the commands
-contained in the modules you specify.
-Each command is exposed as a [RemoteScriptNodeStep Plugin](http://rundeck.org/docs/developer/workflow-step-plugin.html#remotescriptnodestep-plugin).
+Use *remote-node-steps* to generate a plugin that will let users execute
+the module commands as a[RemoteScriptNodeStep Plugins](http://rundeck.org/docs/developer/workflow-step-plugin.html#remotescriptnodestep-plugin).
+With your modules contained in the plugin, Rundeck will take care of
+deploying the rerun modules to the remote host (as a rerun archive)
+and execute the user's specified command.
+
+Job writers will enjoy using your rerun modules as a plugins because
+they can use the Rundeck GUI or job text formats to build workflows.
 
 You can specify a list of modules using a glob pattern. Every command
 contained in yor modules becomes a node step you can reference in
 your job steps.
 
-Imagine you have a module as described below:
+Imagine you have a module called "waitfor" that has a command called "ping" you'd
+like to make accessible as a Job step.
+
+The usage is as described below:
 
 	$ rerun waitfor
 	Available commands in module, "waitfor":
@@ -16,7 +24,12 @@ Imagine you have a module as described below:
 
 Create a plugin for it:
 
-    rerun rundeck-plugin:node-steps --modules waitfor --name waitfor
+    rerun rundeck-plugin:remote-node-steps --modules waitfor --name waitfor
+
+The `--modules` option specifies which list of modules to include.
+The `--name` option gives your plugin a name.
+
+Each command in the module will be exported as a plugin service named after the command using the _MODULE:COMMAND_ format (eg, waitfor:ping).
 
 ### Deploying the plugin
 
