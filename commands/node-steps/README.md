@@ -1,5 +1,6 @@
 Use *node-steps* to generate a plugin for all the commands
 contained in the modules you specify.
+Each command is exposed as a [RemoteScriptNodeStep Plugin](http://rundeck.org/docs/developer/workflow-step-plugin.html#remotescriptnodestep-plugin).
 
 You can specify a list of modules using a glob pattern. Every command
 contained in yor modules becomes a node step you can reference in

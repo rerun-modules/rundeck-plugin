@@ -7,14 +7,18 @@ This gives a friendly user interface to those using your modules.
 Also, exposed as a plugin, your job writers will be able
 write jobs using your plugins as steps.
 
-If your rerun commands require sensitive data only your administrator should
-know, see the Configuration section below.
+### What kind of plugins?
 
-## Configuration
+*rundeck-plugin* can support several kinds of plugin use cases.
 
-You can control if your command options should be treated as plugin configuration properties
-by using the metadata key: `RUNDECK_PLUGIN_CONFIG_SCOPE`.
+* Job steps that execute remote nodes. See *node-steps* command.
+* Provide node information to your Rundeck projects.  See *model-source* command.
+* Execute commands on remote nodes. See *node-executor* command.
 
-Here's how to make a command option configurable for a project:
+### What if my command depends on other modules?
 
-	RUNDECK_PLUGIN_CONFIG_SCOPE=Project
+That's OK. You can specify multiple modules to the rundeck-plugin commands.
+When your plugin is built, these other plugins will be included as a rerun
+archive.
+
+

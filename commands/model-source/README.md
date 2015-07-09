@@ -1,5 +1,7 @@
 
-Use *model-source* to generate a Resource Model Source plugin for the specified command.
+Use *model-source* to generate a 
+[Resource Model Source plugin](http://rundeck.org/docs/developer/resource-model-source-plugin.html) 
+for the specified command.
 You can specify multiple modules in case your command depends on them.
 (You can specify a list of modules using a glob pattern.)
 
