@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+#
+# launcher - Launch rerun from an self extracting archive script
+#
+# generator: @GENERATOR@
+# date: @DATE@
+# user: @USER@
+# archive-version: @VERSION@
+# archive-release: @RELEASE@
+
+# Function to print error message and exit
+die() { echo "ERROR: $* " >&2 ; exit 1 ; }
+
+# Check for required environment variables 
+[ -z "${CWD}" ] && die "CWD not set." ; # user's current working directory
+[ -z "${PAYLOAD}" ] && die "PAYLOAD directory not specified." ; # archive artifacts 
+
+# Verify the extracted artifact contents
+[ -d ${PAYLOAD}/rerun ] || die "rerun subdirectory not found. CWD=${CWD}, PAYLOAD=$PAYLOAD"
+[ -d ${PAYLOAD}/rerun/modules ] || die "missing modules subdirectory"
+[ -f ${PAYLOAD}/rerun/rerun ] || die "missing rerun script"
+[ -x ${PAYLOAD}/rerun/rerun ] || { chmod +x ./rerun || die "couldn't set rerun executable" ; }
+
+# set the module directory base
+export RERUN_MODULES=$PAYLOAD/rerun/modules
+
+# move into the current working directory
+#cd $CWD || die "couldn't change to current working directory: $CWD"
+
+# add archive rerun script to path
+PATH=$PATH:$PAYLOAD/rerun
+
+#echo "DEBUG: RD_ variables: ($(env |grep RD_ | sort))"
+
+# Generate an answers file for any of the possible command step options.
+# Note: assumes RD_ environment variables are passed through.
+
+env|grep RD_CONFIG | sed 's/^RD_CONFIG_//g' > answers
+
+# launch it!
+#echo "DEBUG: launcher: \$@: $@"
+exec $PAYLOAD/rerun/rerun -G -A answers "$@"
+
+# Done
