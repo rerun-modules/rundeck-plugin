@@ -65,7 +65,7 @@ module=${COMMAND%%:*}
 command=${COMMAND##*:}
 
 # Validate $COMMAND exists in this rerun environment
-! rerun_commands $MODULES_DIR $module | grep -q $command  && {
+! rerun_commands $MODULES_DIR "$module" | grep -q "$command"  && {
 	rerun_die 2 "Command not found: $COMMAND"
 }
 
