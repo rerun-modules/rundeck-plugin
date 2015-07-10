@@ -1,0 +1,3 @@
+Use *node-steps* to generate a plugin that will let users execute
+the module commands as ...
+
