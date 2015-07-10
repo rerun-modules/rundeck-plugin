@@ -30,15 +30,39 @@ export RERUN_MODULES=$PAYLOAD/rerun/modules
 # add archive rerun script to path
 PATH=$PATH:$PAYLOAD/rerun
 
-#echo "DEBUG: RD_ variables: ($(env |grep RD_ | sort))"
+# Marshalling config properties to command options
+# -------------------------------------------------
+# Generate a rerun answers file for any of the matching command step options.
+# Remove the RD_CONFIG prefix from the variable name.
+#
+#      RD_CONFIG_MY_PROPNAME --translated--> MY_PROPNAME
+#
+# Note: assumes RD_* environment variables are passed through.
 
-# Generate an answers file for any of the possible command step options.
-# Note: assumes RD_ environment variables are passed through.
 
-env|grep RD_CONFIG | sed 's/^RD_CONFIG_//g' > answers
+ANSWERS=${PAYLOAD}/answers.$$
+
+> $ANSWERS
+
+env | 
+while read envvar
+do 
+	varname=${envvar%%=*}
+	[[ "${varname:-}" =~ ^RD_CONFIG.+ ]] || continue
+	ANSWER_VARNAME=$(echo $varname |sed 's/^RD_CONFIG_//g' )
+
+	VALUE=$(eval echo \$${varname})
+	if [[ "${VALUE:-}" = *[[:space:]]* ]]
+	then
+		printf "%s=\"%s\"\n" "$ANSWER_VARNAME" "$VALUE" >> $ANSWERS
+	else
+		printf "%s=%s\n" "$ANSWER_VARNAME" "$VALUE" >> $ANSWERS		
+	fi
+done
+
 
 # launch it!
-#echo "DEBUG: launcher: \$@: $@"
-exec $PAYLOAD/rerun/rerun -G -A answers "$@"
+
+exec $PAYLOAD/rerun/rerun -G -A $ANSWERS "$@"
 
 # Done
