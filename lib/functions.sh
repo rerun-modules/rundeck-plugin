@@ -43,10 +43,10 @@ generate_config_property() {
 	then
 		# Generate a boolean property
 		printf -- "    - type: Boolean\n"
-		printf -- "      name: %s\n" "$option"
-		printf -- "      title: %s\n" "$option"
-		printf -- "      description: %s\n" "$description"
-		printf -- "      default: false\n"
+		printf -- "        name: %s\n" "$option"
+		printf -- "        title: %s\n" "$option"
+		printf -- "        description: %s\n" "$description"
+		printf -- "        default: false\n"
 	else
 		: ${type:=String};	# Default to a string property (or: String, Boolean, Integer, Long, *Select)
 		printf -- "    - type: $type\n"
