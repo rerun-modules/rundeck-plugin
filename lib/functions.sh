@@ -44,17 +44,17 @@ generate_config_property() {
 		# Generate a boolean property
 		printf -- "    - type: Boolean\n"
 		printf -- "        name: %s\n" "$option"
-		printf -- "        title: %s\n" "$option"
-		printf -- "        description: %s\n" "$description"
+		printf -- "        title: '%s'\n" "$option"
+		printf -- "        description: \"%s\"\n" "$description"
 		printf -- "        default: false\n"
 	else
 		: ${type:=String};	# Default to a string property (or: String, Boolean, Integer, Long, *Select)
 		printf -- "    - type: $type\n"
 		printf -- "        name: %s\n" "$option"
-		printf -- "        title: %s\n" "$option"
-		printf -- "        description: %s\n" "$description"
+		printf -- "        title: '%s'\n" "$option"
+		printf -- "        description: \"%s\"\n" "$description"
 		[[ -n "$default" ]] && {
-		printf -- "        default: %s\n" "$default"
+		printf -- "        default: '%s'\n" "$default"
 		}
 		case ${type} in
 			Select|FreeSelect)
