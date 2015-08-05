@@ -91,18 +91,24 @@ date: $(date)
 providers:
 EOF
 
+
 for module in $MODULES
 do
 	commands=($(rerun_commands $MODULES_DIR $module))
 	rerun_log info "Creating RemoteScriptNodeStep providers for ${#commands[*]} commands in $module ..."
 	for command in ${commands[*]}
 	do
-		printf -- "- $module:$command "
+		PLUGIN_STEP_TYPE=RemoteScriptNodeStep
 
 		DESCRIPTION=$(rerun_property_get $MODULES_DIR/$module/commands/$command DESCRIPTION)
+		! plugintype=$(rerun_property_get $MODULES_DIR/$module/commands/$command RUNDECK_PLUGIN_STEP_TYPE) && :
+		[[ -n ${plugintype:-} ]] && PLUGIN_STEP_TYPE=$plugintype
+
+		printf -- "- $module:$command ($PLUGIN_STEP_TYPE) "
+
 		cat >> $BUILD_DIR/$PLUGIN_NAME/plugin.yaml <<-EOF
 			  - name: $module:$command
-			    service: RemoteScriptNodeStep
+			    service: $PLUGIN_STEP_TYPE
 			    title: '$module: $command'
 			    description: '$DESCRIPTION'
 			    plugin-type: script

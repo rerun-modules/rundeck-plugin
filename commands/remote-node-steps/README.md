@@ -1,5 +1,6 @@
 Use *remote-node-steps* to generate a plugin that will let users execute
-the module commands as [RemoteScriptNodeStep Plugins](http://rundeck.org/docs/developer/workflow-step-plugin.html#remotescriptnodestep-plugin).
+the module commands as [RemoteScriptNodeStep Plugins](http://rundeck.org/docs/developer/workflow-step-plugin.html#remotescriptnodestep-plugin). This allows rundeck to 
+dispatch your module's command via the Node Executor (eg, SSH).
 With your modules contained in the plugin, Rundeck will take care of
 deploying the rerun modules to the remote host (as a rerun archive)
 and execute the user's specified command.
