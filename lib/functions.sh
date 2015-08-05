@@ -107,7 +107,7 @@ create_stubbs-archive() {
 	rerun stubbs:archive \
 	--file $BUILD_DIR/$NAME/contents/rerun.sh \
 	--format sh \
-	--modules $MODULES \
+	--modules "$MODULES" \
 	--version $VERSION \
 	--template $RERUN_MODULE_DIR/templates/archive; # special template that populates answers file
 
