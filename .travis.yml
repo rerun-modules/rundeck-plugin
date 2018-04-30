@@ -1,15 +1,34 @@
-lang: c
-script: "./travis-ci.sh"
+sudo: false
+language: c
+compiler: gcc
+if: tag IS blank
+script: /usr/lib/x86_64-linux-gnu/rerun/travis-ci-modules.sh
 notifications:
   irc:
   - irc.freenode.org#rerun
-before_install:
-- sudo apt-get update -qq
-- sudo apt-get install -qq markdown
-- sudo apt-get install -qq build-essential
-- sudo apt-get install -qq devscripts
-- sudo apt-get install -qq dh-make
-- sudo apt-get install -qq rpm
+addons:
+  apt:
+    packages:
+    - markdown
+    - fakeroot
+    - build-essential
+    - devscripts
+    - autoconf
+    - automake
+    - dh-make
+    - libfile-fcntllock-perl
+    - rpm
+    - xmlstarlet
+    - jq
+    - wget
+    - zip
+    - rerun
+    - rerun-bintray
+    sources:
+    - sourceline: deb https://dl.bintray.com/rerun/rerun-deb /
 env:
   global:
-    secure: GkqJh7n5FejuyDGlc+95Hm0L6XHtFYEpStxgkBXl6OPLIDbF8WF7puvSmELGjAdhW598QNwecDbd33tALoWgph7EhtmXOFOMDALyx/m15Dw+tT9YoWPXnPk+fp8hE0SVO1yW3mtBjcsgmFIhJzzB4Ns/11pGEWqEMSZgg20D8vYK5XN9VwNimpJhzi3mA+aClUhmd/iTEvpmN0G3lLzszCjCi70ri7aMtpHvQC/kvfGsTqDZG0q8D3Tc6KjZRIj4CEaiPRUee0fKV6FmlJBgVFud6Ba3dobUaTDFTMna/WSDCVP6xtBgnePnn2MzwP+jv3jBeCF/x0WRYpUGGqmE/yZ0Xlqg24zZD7NN61KwdYShka7v7t1tS6IBUtrgx4QNwZvnWUohu81Zg3WmWJaWEK1NWg36qcorvvm/RzwQNXYEKwFR/RXn2uyFQtiwOXvO/jA5A8QBWW4YVGXfYHdhUTAL0kVhOnD5ZqO2SpKX0vfimjrl2LLJMqEZnfrlIGq6kiFHWb1HFWlQOXR4y2TZvMg6SgpRpvtN99dBrZYs2mLamXbjbg55u548u6nZ2qA0ovbqX74IyNc1nFefX5wgQMbgTk3LqZKQH2dAXHNobxHulZoE7tND3rJ7lmENZsabPYnUMJ1RaPvmlh7ybDZBAEgIQKPqwsvQAa/wQax7n6c=
+  - BINTRAY_USER=ahonor
+  - BINTRAY_ORG=rerun
+  - secure: GkqJh7n5FejuyDGlc+95Hm0L6XHtFYEpStxgkBXl6OPLIDbF8WF7puvSmELGjAdhW598QNwecDbd33tALoWgph7EhtmXOFOMDALyx/m15Dw+tT9YoWPXnPk+fp8hE0SVO1yW3mtBjcsgmFIhJzzB4Ns/11pGEWqEMSZgg20D8vYK5XN9VwNimpJhzi3mA+aClUhmd/iTEvpmN0G3lLzszCjCi70ri7aMtpHvQC/kvfGsTqDZG0q8D3Tc6KjZRIj4CEaiPRUee0fKV6FmlJBgVFud6Ba3dobUaTDFTMna/WSDCVP6xtBgnePnn2MzwP+jv3jBeCF/x0WRYpUGGqmE/yZ0Xlqg24zZD7NN61KwdYShka7v7t1tS6IBUtrgx4QNwZvnWUohu81Zg3WmWJaWEK1NWg36qcorvvm/RzwQNXYEKwFR/RXn2uyFQtiwOXvO/jA5A8QBWW4YVGXfYHdhUTAL0kVhOnD5ZqO2SpKX0vfimjrl2LLJMqEZnfrlIGq6kiFHWb1HFWlQOXR4y2TZvMg6SgpRpvtN99dBrZYs2mLamXbjbg55u548u6nZ2qA0ovbqX74IyNc1nFefX5wgQMbgTk3LqZKQH2dAXHNobxHulZoE7tND3rJ7lmENZsabPYnUMJ1RaPvmlh7ybDZBAEgIQKPqwsvQAa/wQax7n6c=
+  - secure: GWB9mbBLUD+WsYThC4yI22DE0SPW2IGmoAa6cEgNstd0JRfrmUeA2q/oCdkLuPAn9uxGXmYcKSspMW4rWZXnXACg5Lw8j8D9Rc5GdN9LQ2QD+1/FR7Cjp5rG+ucVpZo1uY/rnlHL9fWyeqt7EN5Tc4FqXxuj0ayjPzDZpYlu5eSoCl/E21u/nOoR88Gl06yAsy2R1Ebb17EOwCI5MXYoU0hw+w4d2LinIGVYK8rZsl4wJJwrF6T9MWy1r8d/UmvsXVLhL7Qz81GjzU328UYg8pObcbJJd+XTO6RG7sPfizGpjO42R4+uQ6EojUAsc/PiS1JvSft5MPSMMpalL8Xed7cDd3tzWh1FpGjj+QMYT9TP4s6qUlDctjhE39o3URzE2XLsE1DAdCCDnCQfaDbLlZ45tHivjgYL1f5HhOeOMQa8O9flZ+x8jWRUNv2o2yILeRRJnfAOfutsSSYm5PvB1r2o6u3DpFZYQv2tPOfwYnulhZlYemZNdZgYRrjzaTnB5mjLlc+QjgGbjI2U3Ivawlv676+ID+kqzgsma/XUJbC/rh8Rhs8pzdWUzreOsx8uTmzpQ0IebplpnNRu1A+NBNMFkVtMx9uLSKzqq0kCvX0rjEdXW6SIYxiyl/do8QC/V1d0SKCVwLY6y9qTPjMr2nCz9X5YMvRKgU4Vku+T3GE=
