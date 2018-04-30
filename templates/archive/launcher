@@ -24,6 +24,7 @@ die() { echo "ERROR: $* " >&2 ; exit 1 ; }
 # set the module directory base
 export RERUN_MODULES=$PAYLOAD/rerun/modules
 
+export RERUN_LOG_FMT_CONSOLE="[%level%]: %message%"
 
 # add archive rerun script to path
 PATH=$PATH:$PAYLOAD/rerun
@@ -36,37 +37,51 @@ PATH=$PATH:$PAYLOAD/rerun
 #      RD_CONFIG_MY_PROPNAME --translated--> MY_PROPNAME
 #
 # Note: assumes RD_* environment variables are passed through.
-
 #env|grep '^RD_'|sort >/tmp/debug.context
 
 ANSWERS=${PAYLOAD}/answers.$$
-
-> $ANSWERS
+> $ANSWERS ; # truncate 
 
 env | 
 while read envvar
 do 
 	varname=${envvar%%=*}
 	[[ "${varname:-}" =~ ^RD_CONFIG.+ ]] || continue
-	ANSWER_VARNAME=$(echo $varname |sed 's/^RD_CONFIG_//g' )
 
-	VALUE=$(eval echo \$${varname})
+	answer_varname=$(echo ${varname/RD_CONFIG_/})
+	answer_value=$(eval echo \$${varname})
 
 	# Skip values if they contain an unresolved context variable.
-	[[ "$VALUE" =~ \${(option|node|job)\..*} ]] && continue
+	[[ "$answer_value" =~ \$\{(option|node|job|config)\..*\} ]] && {
+		#echo "DEBUG: value '$VALUE' matches context variable pattern. Skipping it" >> /tmp/debug.context
+		continue
+	}
 
-	if [[ "${VALUE:-}" = *[[:space:]]* ]]
+	if [[ "${answer_value:-}" = *[[:space:]]* ]]
 	then
-		printf "%s=\"%s\"\n" "$ANSWER_VARNAME" "$VALUE" >> $ANSWERS
+		printf "%s=\"%s\"\n" "$answer_varname" "$answer_value" >> $ANSWERS
 	else
-		printf "%s=%s\n" "$ANSWER_VARNAME" "$VALUE" >> $ANSWERS		
+		printf "%s=%s\n" "$answer_varname" "$answer_value" >> $ANSWERS		
 	fi
 done
 
 #cp $ANSWERS /tmp/debug.answers
 
-# launch it!
+# Get ready to run 
+declare -a rerun_flags
+rerun_flags=( -G ) ; # color enable
+rerun_flags+=( "-A $ANSWERS" )
 
-exec $PAYLOAD/rerun/rerun -G -A $ANSWERS "$@"
+[[ "${RD_JOB_LOGLEVEL}" == "DEBUG" ]] && {
+	rerun_flags+=( --loglevel debug )
+}
+if [[ -n "${RD_CONFIG_RUN_AS:-}" ]]
+then
+	rerun_flags+=( "-S $RD_CONFIG_RUN_AS" )
+fi
+#echo >&2 "DEBUG: launcher: rerun_flags: ${rerun_flags[*]:-} $@"
+
+# launch it!
+exec $PAYLOAD/rerun/rerun ${rerun_flags[@]:-} "$@"
 
 # Done

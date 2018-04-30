@@ -54,11 +54,12 @@ umask 0002
 # If it is unset, create a temporary directory.
 if [[ -z "${EXTRACT_DIR}" ]]
 then
-    SCRATCH_FILES[0]=`mktemp -d ${TMPDIR}/rerun.bin.XXXXXX` || die "failed creating temporary directory."
+    SCRATCH_FILES[0]=$(mktemp -d ${TMPDIR}/rerun.sh.XXXXXX) || die "failed creating temporary directory."
     EXTRACT_DIR=${SCRATCH_FILES[0]}
 else
     mkdir -p "$EXTRACT_DIR"
 fi
+chmod 755 "$EXTRACT_DIR"
 export PAYLOAD=${EXTRACT_DIR}
 
 # CWD and oldCWD are passed to launcher as env variables.
