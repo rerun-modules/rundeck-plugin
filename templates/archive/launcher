@@ -40,15 +40,15 @@ PATH=$PATH:$PAYLOAD/rerun
 #env|grep '^RD_'|sort >/tmp/debug.context
 
 ANSWERS=${PAYLOAD}/answers.$$
-> $ANSWERS ; # truncate 
+> "$ANSWERS" ; # truncate 
 
 env | 
-while read envvar
+while read -r envvar
 do 
 	varname=${envvar%%=*}
 	[[ "${varname:-}" =~ ^RD_CONFIG.+ ]] || continue
 
-	answer_varname=$(echo ${varname/RD_CONFIG_/})
+	answer_varname=${varname/RD_CONFIG_/}
 	answer_value=$(eval echo \$${varname})
 
 	# Skip values if they contain an unresolved context variable.
@@ -59,9 +59,9 @@ do
 
 	if [[ "${answer_value:-}" = *[[:space:]]* ]]
 	then
-		printf "%s=\"%s\"\n" "$answer_varname" "$answer_value" >> $ANSWERS
+		printf "%s=\"%s\"\n" "$answer_varname" "$answer_value" >> "$ANSWERS"
 	else
-		printf "%s=%s\n" "$answer_varname" "$answer_value" >> $ANSWERS		
+		printf "%s=%s\n" "$answer_varname" "$answer_value" >> "$ANSWERS"
 	fi
 done
 
@@ -74,14 +74,15 @@ rerun_flags+=( "-A $ANSWERS" )
 
 [[ "${RD_JOB_LOGLEVEL}" == "DEBUG" ]] && {
 	rerun_flags+=( --loglevel debug )
+	rerun_flags+=( -x )
 }
-if [[ -n "${RD_CONFIG_RUN_AS:-}" ]]
-then
-	rerun_flags+=( "-S $RD_CONFIG_RUN_AS" )
-fi
+[[ -n "${RD_CONFIG_RUN_AS:-}" ]] && {
+	rerun_flags+=( -S "$RD_CONFIG_RUN_AS" )
+}
+
 #echo >&2 "DEBUG: launcher: rerun_flags: ${rerun_flags[*]:-} $@"
 
 # launch it!
-exec $PAYLOAD/rerun/rerun ${rerun_flags[@]:-} "$@"
+exec "$PAYLOAD/rerun/rerun" ${rerun_flags[@]:-} "$@"
 
 # Done
