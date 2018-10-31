@@ -14,15 +14,18 @@ describe "node-steps"
 it_builds_a_WorkflowNodeStep_plugin() {
 	BUILD_DIR=$(mktemp -d "/tmp/it_builds_a_WorkflowNodeStep_plugin.BASEDIR.XXX")
 	PLUGIN_NAME=rundeck-plugin-dummy
+	VERSION=1.0.$$	
 	rerun rundeck-plugin:node-steps \
 		--name $PLUGIN_NAME \
 		--modules rundeck-plugin \
+		--version "$VERSION" \
 		--build-dir $BUILD_DIR
 
 	# Verify build content was generated.
 	test -d $BUILD_DIR/$PLUGIN_NAME
 	test -f $BUILD_DIR/$PLUGIN_NAME/plugin.yaml
 	grep 'service: WorkflowNodeStep' $BUILD_DIR/$PLUGIN_NAME/plugin.yaml > $BUILD_DIR/grep.list
+	grep "^version: $VERSION" $BUILD_DIR/$PLUGIN_NAME/plugin.yaml
 
 
 	# Verify the rerun archive is created and can list.

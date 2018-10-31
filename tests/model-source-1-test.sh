@@ -16,16 +16,19 @@ describe "model-source"
 it_builds_a_ResourceModelSource_plugin() {
 	BUILD_DIR=$(mktemp -d "/tmp/it_builds_a_ResourceModelSource_plugin.BASEDIR.XXX")
 	PLUGIN_NAME=rundeck-plugin-dummy
+	VERSION=1.0.$$
 	rerun rundeck-plugin:model-source \
 		--name $PLUGIN_NAME \
 		--modules rundeck-plugin \
 		--command rundeck-plugin:model-source \
+		--version "$VERSION" \
 		--build-dir $BUILD_DIR
 
 	# Verify build content was generated.
 	test -d $BUILD_DIR/$PLUGIN_NAME
 	test -f $BUILD_DIR/$PLUGIN_NAME/plugin.yaml
 	grep 'service: ResourceModelSource' $BUILD_DIR/$PLUGIN_NAME/plugin.yaml
+	grep "^version: $VERSION" $BUILD_DIR/$PLUGIN_NAME/plugin.yaml
 
 	# Verify the rerun archive is created and can list.
 	test -f $BUILD_DIR/$PLUGIN_NAME/contents/rerun.sh

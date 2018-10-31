@@ -14,16 +14,19 @@ describe "node-executor"
 it_builds_a_NodeExecutor_plugin() {
 	BUILD_DIR=$(mktemp -d "/tmp/it_builds_a_NodeExecutor_plugin.BASEDIR.XXX")
 	PLUGIN_NAME=rundeck-plugin-dummy
+	VERSION=1.0.$$
 	rerun rundeck-plugin:node-executor \
 		--name $PLUGIN_NAME \
 		--modules rundeck-plugin \
 		--command rundeck-plugin:node-executor \
+		--version "$VERSION" \
 		--build-dir $BUILD_DIR
 
 	# Verify build content was generated.
 	test -d $BUILD_DIR/$PLUGIN_NAME
 	test -f $BUILD_DIR/$PLUGIN_NAME/plugin.yaml
 	grep 'service: NodeExecutor' $BUILD_DIR/$PLUGIN_NAME/plugin.yaml
+	grep "^version: $VERSION" $BUILD_DIR/$PLUGIN_NAME/plugin.yaml
 
 	# Verify the rerun archive is created and can list.
 	test -f $BUILD_DIR/$PLUGIN_NAME/contents/rerun.sh
